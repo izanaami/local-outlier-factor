@@ -7,7 +7,7 @@
 using namespace std;
 
 void main1(){
-	/*
+	/* 
 	CPoint point1(4, (double)1, (double)  2, (double) 4, (double) 3);
 	CPoint point2(4, (double)2, (double)  2, (double) 2, (double) 3);
 	CPoint point3(4, (double)3, (double)  32, (double) 3, (double) 3);

@@ -319,4 +319,4 @@ std::vector<outlier> GetOutliers(int k, std::vector<CPoint> vec_Instances)
 	}
 
 	return vec_Outliers;
-}
+} 

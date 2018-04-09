@@ -8,7 +8,7 @@
 class CPoint
 	/* n维坐标点
 	*/
-{
+{ 
 private:
 	std::vector<double> coordinate;	//坐标值
 	int dimension;					//维数

@@ -1,7 +1,7 @@
 #include "point.h"
 
 CPoint::CPoint(int n, ...)
-{
+{ 
 	dimension = n;
 	if (!coordinate.empty())	// Èô·Ç¿Õ£¬Çå¿Õvector
 		coordinate.clear();

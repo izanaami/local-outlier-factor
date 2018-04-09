@@ -47,4 +47,4 @@ struct outlier
 
 std::vector<outlier> GetOutliers(int, std::vector<CPoint>);
 
-#endif
+#endif 
