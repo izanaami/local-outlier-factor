@@ -5,9 +5,10 @@
 #include "lof.h"
 
 using namespace std;
+using namespace LOF;
 
 void main1(){
-	/* 
+	/*
 	CPoint point1(4, (double)1, (double)  2, (double) 4, (double) 3);
 	CPoint point2(4, (double)2, (double)  2, (double) 2, (double) 3);
 	CPoint point3(4, (double)3, (double)  32, (double) 3, (double) 3);
@@ -69,7 +70,7 @@ void main1(){
 	system("pause");
 }
 
-void main(){
+void test(){
 	vector<CPoint> instances;
 	instances.push_back(CPoint(2,  -4.8447532242074978   ,  -5.6869538132901658   ));
 	instances.push_back(CPoint(2,  1.7265577109364076    ,  -2.5446963280374302   ));
@@ -102,7 +103,7 @@ void main(){
 	instances.push_back(CPoint(2,  -0.685421751407983    ,  -0.73115552984211407  ));
 	instances.push_back(CPoint(2,  -2.3744241805625044   ,  1.3443896265777866    ));
 
-	LOF lof(instances, true);
+//	LOF lof(instances, true);
 
 	vector<outlier>out;
 	out = GetOutliers(5, instances);
@@ -113,6 +114,73 @@ void main(){
 		cout << setiosflags(ios::fixed) << setprecision(20) << out.at(i).instance.GetValue(0) << " , ";
 		cout << setiosflags(ios::fixed) << setprecision(20) << out.at(i).instance.GetValue(1) << " ) "<<endl;
 	}
+}
 
+void debug(){
+	vector<CPoint> instances;
+	instances.push_back(CPoint(2, -4.8447532242074978, -5.6869538132901658));
+	instances.push_back(CPoint(2, 1.7265577109364076, -2.5446963280374302));
+	instances.push_back(CPoint(2, -1.9885982441038819, 1.705719643962865));
+	instances.push_back(CPoint(2, -1.999050026772494, -4.0367551415711844));
+	instances.push_back(CPoint(2, -2.0550860126898964, -3.6247409893236426));
+	instances.push_back(CPoint(2, -1.4456945632547327, -3.7669258809535102));
+	instances.push_back(CPoint(2, -4.6676062022635554, 1.4925324371089148));
+	instances.push_back(CPoint(2, -3.6526420667796877, -3.5582661345085662));
+	instances.push_back(CPoint(2, 6.4551493172954029, -0.45434966683144573));
+	instances.push_back(CPoint(2, -0.56730591589443669, -5.5859532963153349));
+	instances.push_back(CPoint(2, -5.1400897823762239, -1.3359248994019064));
+	instances.push_back(CPoint(2, 5.2586932439960243, 0.032431285797532586));
+	instances.push_back(CPoint(2, 6.3610915734502838, -0.99059648246991894));
+	instances.push_back(CPoint(2, -0.31086913190231447, -2.8352818694180644));
+	instances.push_back(CPoint(2, 1.2288582719783967, -1.1362795178325829));
+	instances.push_back(CPoint(2, -0.17986204466346614, -0.32813130288006365));
+	instances.push_back(CPoint(2, 2.2532002509929216, -0.5142311840491649));
+	instances.push_back(CPoint(2, -0.75397166138399296, 2.2465141276038754));
+	instances.push_back(CPoint(2, 1.9382517648161239, -1.7276112460593251));
+	instances.push_back(CPoint(2, 1.6809250808549676, -2.3433636210337503));
+	instances.push_back(CPoint(2, 0.68466572523884783, 1.4374914487477481));
+	instances.push_back(CPoint(2, 2.0032364431791514, -2.9191062023123635));
+	instances.push_back(CPoint(2, -1.7565895138024741, 0.96995712544043267));
+	instances.push_back(CPoint(2, 3.3809644295064505, 6.7497121359292684));
+	instances.push_back(CPoint(2, -4.2764152718650896, 5.6551328734397766));
+	instances.push_back(CPoint(2, -3.6347215445083019, -0.85149861984875741));
+	instances.push_back(CPoint(2, -5.6249411288060385, -3.9251965527768755));
+	instances.push_back(CPoint(2, 4.6033708001912093, 1.3375110154658127));
+	instances.push_back(CPoint(2, -0.685421751407983, -0.73115552984211407));
+	instances.push_back(CPoint(2, -2.3744241805625044, 1.3443896265777866));
+
+	//debug DistEud
+	cout << setiosflags(ios::fixed) << setprecision(20) << DistEuclidean(instances.at(0), instances.at(1));
+
+	//debug normalize_instances
+	CLof lof(instances, true);
+	for (int i = 0; i<lof.vec_Instances.size();i++)
+		cout << setiosflags(ios::fixed) << setprecision(20) << lof.vec_Instances.at(i).GetValue(0) << " "
+		<< lof.vec_Instances.at(i).GetValue(1) << endl;
+
+	//debug k_distance
+	vector<CPoint> neighbours;
+	double k_dist = k_distance(5, instances.at(0), instances, &neighbours);
+	cout << setiosflags(ios::fixed) << setprecision(20) << k_dist << endl;
+	for (int i = 0; i<neighbours.size(); i++)
+		cout << setiosflags(ios::fixed) << setprecision(20) << neighbours.at(i).GetValue(0) << " "
+		<< neighbours.at(i).GetValue(1) << endl;
+
+	//debug reachability_distance
+	double max = ReachabilityDist(5, instances.at(0), instances.at(1), instances);
+	cout << setiosflags(ios::fixed) << setprecision(20) << max << endl;
+
+	//debug local_reachability_density
+//	double out = LocalReachabilityDensity(5, instances.at(0), instances);
+//	cout << setiosflags(ios::fixed) << setprecision(20) << out << endl; 
+
+	//debug LOF.local_outlier_factor !!!!!!
+	CLof lof1(instances, true);
+	double out = lof1.LocalOutlierFactor(5, instances.at(0));
+	cout << setiosflags(ios::fixed) << setprecision(20) << out << endl;
+}
+
+void main(){
+	test();
 	system("pause");
 }

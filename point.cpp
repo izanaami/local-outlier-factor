@@ -1,7 +1,7 @@
 #include "point.h"
 
-CPoint::CPoint(int n, ...)
-{ 
+LOF::CPoint::CPoint(int n, ...)
+{
 	dimension = n;
 	if (!coordinate.empty())	// 若非空，清空vector
 		coordinate.clear();
@@ -17,12 +17,12 @@ CPoint::CPoint(int n, ...)
 	va_end(ap);
 }
 
-CPoint::~CPoint()
+LOF::CPoint::~CPoint()
 {
 	coordinate.clear();
 }
 
-void CPoint::SetValue(int index, double value)
+void LOF::CPoint::SetValue(int index, double value)
 /*	修改coordinate[index]的值
 */
 {
@@ -38,7 +38,7 @@ void CPoint::SetValue(int index, double value)
 	}
 }
 
-double CPoint::GetValue(int index)
+double LOF::CPoint::GetValue(int index)
 /*	获取coordinate[index]的值
 */
 {
@@ -54,9 +54,9 @@ double CPoint::GetValue(int index)
 	}
 }
 
-int CPoint::GetDimension(){ return dimension; }
+int LOF::CPoint::GetDimension(){ return dimension; }
 
-bool IsSame(CPoint point1, CPoint point2)
+bool LOF::IsSame(CPoint point1, CPoint point2)
 {
 	if (point1.GetDimension() != point2.GetDimension())
 		return false;
@@ -72,7 +72,7 @@ bool IsSame(CPoint point1, CPoint point2)
 	return true;
 }
 
-double DistEuclidean(CPoint point1, CPoint point2)
+double LOF::DistEuclidean(CPoint point1, CPoint point2)
 /* 计算两个点的距离
 */
 {

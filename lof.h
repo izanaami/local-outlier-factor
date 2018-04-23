@@ -7,44 +7,45 @@
 #include <map>
 #include <iterator>
 
-class LOF	
-	/*	local outlier factor
-	*/
-{
-//public:
-private:
-	std::vector<CPoint> vec_Instances; 
-	std::vector<double> vec_MaxAttributeValue;
-	std::vector<double> vec_MinAttributeValue;
-	
-	bool normalize;
-	int n_InstanceDimension;
+namespace LOF{
+	class CLof
+		/*	local outlier factor
+		*/
+	{
+	public:
+		//private:
+		std::vector<CPoint> vec_Instances;
+		std::vector<double> vec_MaxAttributeValue;
+		std::vector<double> vec_MinAttributeValue;
 
-	void NormalizeInstances();
-	CPoint NormalizeInstance(CPoint);
-	void ComputeInstanceAttributeBounds();
+		bool normalize;
+		int n_InstanceDimension;
 
-public:
-	LOF(std::vector<CPoint>, bool);
-	~LOF();
+		void NormalizeInstances();
+		CPoint NormalizeInstance(CPoint);
+		void ComputeInstanceAttributeBounds();
 
-	double LocalOutlierFactor(int, CPoint);
-	void debug_printout();
-};
+	public:
+		CLof(std::vector<CPoint>, bool);
+		~CLof();
 
-double k_distance(int, CPoint, std::vector<CPoint>, std::vector<CPoint>*);
+		double LocalOutlierFactor(int, CPoint);
+		void debug_printout();
+	};
 
-double ReachabilityDist(int, CPoint, CPoint, std::vector<CPoint>);
+	double k_distance(int, CPoint, std::vector<CPoint>, std::vector<CPoint>*);
 
-double LocalReachabilityDensity(int, CPoint, std::vector<CPoint>);
+	double ReachabilityDist(int, CPoint, CPoint, std::vector<CPoint>);
 
-struct outlier
-{
-	double lof;			// lof分值
-	CPoint instance;	// CPoint类的坐标信息
-	int index;			// 该instance的下标
-};
+	double LocalReachabilityDensity(int, CPoint, std::vector<CPoint>);
 
-std::vector<outlier> GetOutliers(int, std::vector<CPoint>);
+	struct outlier
+	{
+		double lof;			// lof分值
+		CPoint instance;	// CPoint类的坐标信息
+		int index;			// 该instance的下标
+	};
 
-#endif 
+	std::vector<outlier> GetOutliers(int, std::vector<CPoint>);
+}
+#endif

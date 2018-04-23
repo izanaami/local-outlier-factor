@@ -1,6 +1,6 @@
 #include "lof.h"
 
-LOF::LOF(std::vector<CPoint> instances, bool isnormalize)
+LOF::CLof::CLof(std::vector<CPoint> instances, bool isnormalize)
 {
 	if (!vec_Instances.empty())
 		vec_Instances.clear();
@@ -26,14 +26,14 @@ LOF::LOF(std::vector<CPoint> instances, bool isnormalize)
 		NormalizeInstances();
 }
 
-LOF::~LOF()
+LOF::CLof::~CLof()
 {
 	vec_Instances.clear();
 	vec_MaxAttributeValue.clear();
 	vec_MinAttributeValue.clear();
 }
 
-void LOF::ComputeInstanceAttributeBounds()
+void LOF::CLof::ComputeInstanceAttributeBounds()
 /*	得到每个维度上最大值和最小值组成的数组
 */
 {
@@ -57,7 +57,7 @@ void LOF::ComputeInstanceAttributeBounds()
 	}
 }
 
-void LOF::NormalizeInstances()
+void LOF::CLof::NormalizeInstances()
 /*	Normalizes the instances and stores the infromation for rescaling new instances.
 */
 {
@@ -68,7 +68,7 @@ void LOF::NormalizeInstances()
 		vec_Instances.at(i) = this->NormalizeInstance(vec_Instances.at(i));
 }
 
-CPoint LOF::NormalizeInstance(CPoint instance)
+LOF::CPoint LOF::CLof::NormalizeInstance(CPoint instance)
 /*	Normalize: (value - min)/(max - min)
 */
 {
@@ -92,7 +92,7 @@ CPoint LOF::NormalizeInstance(CPoint instance)
 	return normalizedInstance;
 }
 
-double LOF::LocalOutlierFactor(int minPts, CPoint instance)
+double LOF::CLof::LocalOutlierFactor(int minPts, CPoint instance)
 /*	The (local) outlier factor of instance captures the degree to which we call instance an outlier.
 	min_pts is a parameter that is specifying a minimum number of instances to consider for computing LOF value.
 */
@@ -110,23 +110,24 @@ double LOF::LocalOutlierFactor(int minPts, CPoint instance)
 
 	std::vector<double> vec_lrdRatios(vec_Neighbours.size(), 0.0);
 
-	std::vector<CPoint> vec_InstancesWithoutNeighbour = this->vec_Instances;
-	// instances_withour_neighbour = set(instaces)	去除重复的instance
-	for (int i = 0; i < vec_InstancesWithoutNeighbour.size(); i++)
-	{
-		for (int j = i + 1; j < vec_InstancesWithoutNeighbour.size(); j++)
-		{
-			if (IsSame(vec_InstancesWithoutNeighbour.at(j), vec_InstancesWithoutNeighbour.at(i)))
-			{
-				// 删除第j个元素
-				vec_InstancesWithoutNeighbour.erase(vec_InstancesWithoutNeighbour.begin() + j);
-				j--;
-			}
-		}
-	}
-
 	for (int i = 0; i < vec_Neighbours.size(); i++)
 	{
+		std::vector<CPoint> vec_InstancesWithoutNeighbour = this->vec_Instances;
+
+		// instances_withour_neighbour = set(instaces)	去除重复的instance
+		for (int k = 0; k < vec_InstancesWithoutNeighbour.size(); k++)
+		{
+			for (int j = k + 1; j < vec_InstancesWithoutNeighbour.size(); j++)
+			{
+				if (IsSame(vec_InstancesWithoutNeighbour.at(j), vec_InstancesWithoutNeighbour.at(k)))
+				{
+					// 删除第j个元素
+					vec_InstancesWithoutNeighbour.erase(vec_InstancesWithoutNeighbour.begin() + j);
+					j--;
+				}
+			}
+		}
+
 		// instances_without_neighbour.discard(neighbour) 去除和neighbour一样的元素
 		for (int j = 0; j < vec_InstancesWithoutNeighbour.size(); j++)
 		{
@@ -137,7 +138,8 @@ double LOF::LocalOutlierFactor(int minPts, CPoint instance)
 			}
 		}
 
-		double neighbourLrd = LocalReachabilityDensity(minPts, vec_Neighbours.at(i), vec_InstancesWithoutNeighbour);
+		double neighbourLrd;
+		neighbourLrd = LocalReachabilityDensity(minPts, vec_Neighbours.at(i), vec_InstancesWithoutNeighbour);
 		vec_lrdRatios.at(i) = (double)(neighbourLrd / instanceLrd);
 	}
 	
@@ -149,7 +151,7 @@ double LOF::LocalOutlierFactor(int minPts, CPoint instance)
 	return (double)(sum / lenNeighbours);
 }
 
-void LOF::debug_printout()
+void LOF::CLof::debug_printout()
 /*	debug
 */
 {
@@ -174,7 +176,7 @@ void LOF::debug_printout()
 	std::cout << ")" << std::endl;
 }
 
-double k_distance(int k, CPoint instance, std::vector<CPoint> instances, std::vector<CPoint>* pvec_Neighbours)
+double LOF::k_distance(int k, CPoint instance, std::vector<CPoint> instances, std::vector<CPoint>* pvec_Neighbours)
 /*	Computes the k-distance of instance as defined in paper. 
 	It also gatheres the set of k-distance neighbours.
 */
@@ -214,7 +216,7 @@ double k_distance(int k, CPoint instance, std::vector<CPoint> instances, std::ve
 		{
 			pvec_Neighbours->push_back(iter->second.at(i));
 		}
-		k_dist = iter->first;	// 第k近的instance的距离
+		k_dist = (double)iter->first;	// 第k近的instance的距离
 		if (k_sero >= k)
 			break;
 	}
@@ -235,7 +237,7 @@ double k_distance(int k, CPoint instance, std::vector<CPoint> instances, std::ve
 	return k_dist;
 }
 
-double ReachabilityDist(int k, CPoint instance1, CPoint instance2, std::vector<CPoint> vec_Instances)
+double LOF::ReachabilityDist(int k, CPoint instance1, CPoint instance2, std::vector<CPoint> vec_Instances)
 /*	The reachability distance of instance1 with respect to instance2.
 */
 {
@@ -252,7 +254,7 @@ double ReachabilityDist(int k, CPoint instance1, CPoint instance2, std::vector<C
 		return distanceEuclidean;
 }
 
-double LocalReachabilityDensity(int minPts, CPoint instance, std::vector<CPoint> vec_Instances)
+double LOF::LocalReachabilityDensity(int minPts, CPoint instance, std::vector<CPoint> vec_Instances)
 /*	Local reachability density of instance is the inverse of the average reachability 
     distance based on the min_pts-nearest neighbors of instance.
 */
@@ -279,7 +281,7 @@ double LocalReachabilityDensity(int minPts, CPoint instance, std::vector<CPoint>
 	return (double)(lenNeighbour / sumReachDist);
 }
 
-std::vector<outlier> GetOutliers(int k, std::vector<CPoint> vec_Instances)
+std::vector<LOF::outlier> LOF::GetOutliers(int k, std::vector<LOF::CPoint> vec_Instances)
 /*	得到outliers，输出为vector<struct outlier>
 	outlier{
 	double lof;
@@ -296,7 +298,7 @@ std::vector<outlier> GetOutliers(int k, std::vector<CPoint> vec_Instances)
 		CPoint instance = vec_Instances.at(i);
 		vec_InstancesBackUp = vec_Instances;
 		vec_InstancesBackUp.erase(vec_InstancesBackUp.begin() + i);
-		LOF l(vec_InstancesBackUp, true);
+		CLof l(vec_InstancesBackUp, true);
 		double value = l.LocalOutlierFactor(k, instance);
 		if (value>1.0)
 		{
@@ -319,4 +321,4 @@ std::vector<outlier> GetOutliers(int k, std::vector<CPoint> vec_Instances)
 	}
 
 	return vec_Outliers;
-} 
+}
